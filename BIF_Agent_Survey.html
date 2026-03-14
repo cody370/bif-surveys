@@ -227,26 +227,19 @@
       submitted_at: new Date().toISOString()
     };
 
-    // Send to Zapier webhook
+    // Send to Zapier webhook (no-cors to avoid preflight CORS issues with GitHub Pages)
     fetch(WEBHOOK_URL, {
       method: 'POST',
+      mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     })
-    .then(response => {
-      if (response.ok) {
-        document.getElementById('formView').style.display = 'none';
-        document.getElementById('successView').style.display = 'block';
-      } else {
-        throw new Error('Submission failed');
-      }
+    .then(() => {
+      // no-cors returns opaque response, so we assume success
+      document.getElementById('formView').style.display = 'none';
+      document.getElementById('successView').style.display = 'block';
     })
     .catch(err => {
-      if (WEBHOOK_URL === 'YOUR_ZAPIER_WEBHOOK_URL_HERE') {
-        document.getElementById('formView').style.display = 'none';
-        document.getElementById('successView').style.display = 'block';
-        return;
-      }
       errorMsg.textContent = 'Something went wrong. Please try again.';
       errorMsg.style.display = 'block';
       btn.disabled = false;
