@@ -227,11 +227,13 @@
       submitted_at: new Date().toISOString()
     };
 
-    // Send to Zapier webhook (no-cors to avoid preflight CORS issues with GitHub Pages)
+    // Send to Zapier webhook
+    // Using text/plain (CORS-safe simple header) so the browser doesn't strip it in no-cors mode.
+    // Zapier auto-parses JSON from text/plain bodies.
     fetch(WEBHOOK_URL, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload)
     })
     .then(() => {
